@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 // import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Injectable()
-export class TransactionService {
+export class TransactionService extends PrismaClient implements OnModuleInit {
+  private readonly logger = new Logger('Transaction Service');
+  async onModuleInit() {
+    await this.$connect();
+    this.logger.log('Connected to MongoDB');
+  }
   create(/* createTransactionDto: CreateTransactionDto */) {
     return 'This action adds a new transaction';
   }
