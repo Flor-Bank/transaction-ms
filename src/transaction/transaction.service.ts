@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-// import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class TransactionService extends PrismaClient implements OnModuleInit {
@@ -9,8 +10,18 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
     await this.$connect();
     this.logger.log('Connected to MongoDB');
   }
-  create(/* createTransactionDto: CreateTransactionDto */) {
-    return 'This action adds a new transaction';
+  async create(createTransactionDto: CreateTransactionDto) {
+    try {
+      const transaction = await this.transaction.create({
+        data: createTransactionDto,
+      });
+      return transaction;
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
   }
 
   findAll() {
