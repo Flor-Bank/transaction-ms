@@ -12,12 +12,13 @@ import { TransactionService } from './transaction.service';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @MessagePattern('createTransaction')
+  @MessagePattern('transaction.create')
   create(/* @Payload() createTransactionDto: CreateTransactionDto */) {
-    return this.transactionService.create();
+    // return this.transactionService.create();
+    throw new RpcException(NotImplementedException);
   }
 
-  @MessagePattern('findAllTransaction')
+  @MessagePattern('transaction.findAll')
   findAll() {
     return this.transactionService.findAll();
   }

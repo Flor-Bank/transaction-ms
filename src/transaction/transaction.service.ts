@@ -25,7 +25,7 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
   }
 
   findAll() {
-    return `This action returns all transaction`;
+    return this.transaction.findMany({});
   }
 
   findOne(id: string) {
