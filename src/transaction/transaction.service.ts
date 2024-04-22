@@ -28,8 +28,10 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
     return `This action returns all transaction`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  findOne(id: string) {
+    return this.transaction.findFirst({
+      where: { id },
+    });
   }
   changeTransactionStatus() {
     return 'This action changes the status of a transaction';

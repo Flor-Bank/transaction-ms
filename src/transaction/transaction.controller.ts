@@ -1,5 +1,10 @@
-import { Controller, NotImplementedException } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import {
+  Controller,
+  HttpStatus,
+  NotImplementedException,
+  ParseUUIDPipe,
+} from '@nestjs/common';
+import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { TransactionService } from './transaction.service';
 /* import { CreateTransactionDto } from './dto/create-transaction.dto'; */
 
@@ -17,9 +22,16 @@ export class TransactionController {
     return this.transactionService.findAll();
   }
 
-  @MessagePattern('findOneTransaction')
-  findOne(@Payload() id: number) {
-    return this.transactionService.findOne(id);
+  @MessagePattern('transaction.findOne')
+  async findOne(@Payload('id', ParseUUIDPipe) id: string) {
+    const transaction = await this.transactionService.findOne(id);
+
+    if (!transaction) {
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
+        message: `The transaction that you requested was not found`,
+      });
+    }
   }
 
   @MessagePattern('changeTransactionStatus')
