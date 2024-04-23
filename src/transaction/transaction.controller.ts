@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { TransactionService } from './transaction.service';
+import { TransactionPaginationDto } from './dto/transaction-pagination.dto';
 /* import { CreateTransactionDto } from './dto/create-transaction.dto'; */
 
 @Controller()
@@ -19,8 +20,8 @@ export class TransactionController {
   }
 
   @MessagePattern('transaction.findAll')
-  findAll() {
-    return this.transactionService.findAll();
+  findAll(@Payload() transactionPaginationDto: TransactionPaginationDto) {
+    return this.transactionService.findAll(transactionPaginationDto);
   }
 
   @MessagePattern('transaction.findOne')
