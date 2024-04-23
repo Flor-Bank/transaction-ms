@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { RpcException } from '@nestjs/microservices';
+import { TransactionPaginationDto } from './dto/transaction-pagination.dto';
 
 @Injectable()
 export class TransactionService extends PrismaClient implements OnModuleInit {
@@ -24,8 +25,29 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  findAll() {
-    return this.transaction.findMany({});
+  async findAll(transactionPaginationDto: TransactionPaginationDto) {
+    const totalPages = await this.transaction.count({
+      where: {
+        status: transactionPaginationDto.status,
+      },
+    });
+
+    const currentPage = transactionPaginationDto.page;
+    const perPage = transactionPaginationDto.limit;
+    return {
+      data: await this.transaction.findMany({
+        skip: (currentPage - 1) * perPage,
+        take: perPage,
+        where: {
+          status: transactionPaginationDto.status,
+        },
+      }),
+      meta: {
+        total: totalPages,
+        page: currentPage,
+        lastPage: Math.ceil(totalPages / perPage),
+      },
+    };
   }
 
   findOne(id: string) {
