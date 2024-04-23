@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { RpcException } from '@nestjs/microservices';
 import { TransactionPaginationDto } from './dto/transaction-pagination.dto';
+import { ChangeTransactionStatusDto } from './dto/change-transaction-status.dto';
 
 @Injectable()
 export class TransactionService extends PrismaClient implements OnModuleInit {
@@ -55,7 +56,20 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
       where: { id },
     });
   }
-  changeTransactionStatus() {
-    return 'This action changes the status of a transaction';
+  async changeTransactionStatus(
+    changeTransactionStatusDto: ChangeTransactionStatusDto,
+  ) {
+    const { id, status } = changeTransactionStatusDto;
+    const transaction = await this.findOne(id);
+    if (transaction.status === status) {
+      return transaction;
+    }
+    //update transaction status
+    return this.transaction.update({
+      where: { id },
+      data: {
+        status: status,
+      },
+    });
   }
 }

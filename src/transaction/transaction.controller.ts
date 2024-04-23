@@ -7,6 +7,7 @@ import {
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { TransactionService } from './transaction.service';
 import { TransactionPaginationDto } from './dto/transaction-pagination.dto';
+import { ChangeTransactionStatusDto } from './dto/change-transaction-status.dto';
 /* import { CreateTransactionDto } from './dto/create-transaction.dto'; */
 
 @Controller()
@@ -36,9 +37,12 @@ export class TransactionController {
     }
   }
 
-  @MessagePattern('changeTransactionStatus')
-  changeTransactionStatus() {
-    /* return this.transactionService.changeTransactionStatus(); */
-    throw new NotImplementedException();
+  @MessagePattern('transaction.changeStatus')
+  changeTransactionStatus(
+    @Payload() changeTransactionStatusDto: ChangeTransactionStatusDto,
+  ) {
+    return this.transactionService.changeTransactionStatus(
+      changeTransactionStatusDto,
+    );
   }
 }
