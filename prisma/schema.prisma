@@ -14,8 +14,8 @@ datasource db {
 }
 
 enum TransactionStatus {
-OPENED
-CLOSED
+  OPENED
+  CLOSED
 }
 
 enum TransactionType {
@@ -29,9 +29,21 @@ model Transaction {
   fromAccount String            @unique
   toAccount   String
   amount      Int
-  status      TransactionStatus
+  status      TransactionStatus @default(OPENED)
   type        TransactionType
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+//relation between transaction & transaction item
+  transactionItem TransactionItem[]
+}
+
+model TransactionItem {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  OperationId   String
+  Amount        Float
+  InterestRate  Float
+  Transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  transactionId String?      @db.ObjectId
 }
