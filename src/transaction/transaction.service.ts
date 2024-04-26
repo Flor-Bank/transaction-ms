@@ -14,10 +14,13 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
   }
   async create(createTransactionDto: CreateTransactionDto) {
     try {
-      const transaction = await this.transaction.create({
-        data: createTransactionDto,
-      });
-      return transaction;
+      return {
+        message: 'Transaction created successfully',
+      };
+      // const transaction = await this.transaction.create({
+      //   data: createTransactionDto,
+      // });
+      // return transaction;
     } catch (error) {
       throw new RpcException({
         status: 400,
