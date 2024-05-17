@@ -16,6 +16,7 @@ export class TransactionService extends PrismaClient implements OnModuleInit {
     try {
       return {
         message: 'Transaction created successfully',
+        createTransactionDto,
       };
       // const transaction = await this.transaction.create({
       //   data: createTransactionDto,
